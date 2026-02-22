@@ -17,7 +17,7 @@ exports.createOrder = async (req, res) => {
         }
 
         const options = {
-            amount: amount * 100, // Razorpay works in paise (amount * 100)
+            amount: Math.round(amount * 100), // Razorpay works in paise (amount * 100) MUST BE INTEGER
             currency: 'INR',
             receipt: 'receipt_' + Math.random().toString(36).substring(7),
         };
