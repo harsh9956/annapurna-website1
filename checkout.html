@@ -237,8 +237,9 @@
             <p>Your authentic Indian feast is being prepared. Thank you for choosing Annapurna.</p>
             <p style="font-size: 0.9rem; margin-bottom: 2rem;">Order ID: <strong id="successOrderId"
                     style="color:var(--clr-primary)">#ANP-XXXX</strong></p>
-            <button class="btn btn-outline" onclick="window.location.href='orders.html'" style="width:100%">View My
-                Orders</button>
+            <button class="btn btn-primary" id="btnContinueSuccess" style="width:100%; margin-bottom: 0.5rem;">Continue
+                & Rate Order</button>
+            <button class="btn btn-outline" id="btnSkipSuccess" style="width:100%; border:none;">Skip to Orders</button>
         </div>
     </div>
 
@@ -418,7 +419,7 @@
                                             const newOrderId = verifyData.data.orderId;
                                             const orderItems = [...Cart.items];
                                             Cart.clearCart();
-                                            showRatingPopup(orderItems, newOrderId);
+                                            showSuccessModal(orderItems, newOrderId);
                                         } else {
                                             errorEl.textContent = "Payment Verification Failed: " + verifyData.message;
                                             resetBtn(submitBtn);
@@ -475,7 +476,7 @@
                             const newOrderId = data.data.orderId;
                             const orderItems = [...Cart.items];
                             Cart.clearCart();
-                            showRatingPopup(orderItems, newOrderId);
+                            showSuccessModal(orderItems, newOrderId);
                         } else {
                             throw new Error(data.message || 'Payment verification failed');
                         }
@@ -503,7 +504,7 @@
 
                             const orderItems = [...Cart.items];
                             Cart.clearCart();
-                            showRatingPopup(orderItems, newOrder.id);
+                            showSuccessModal(orderItems, newOrder.id);
                         } else {
                             // True API error (e.g. invalid item ID, unauthorized)
                             errorEl.textContent = error.message;
@@ -517,64 +518,66 @@
                     btnElement.disabled = false;
                 }
 
-                function completeCheckout(orderId) {
-                    // Show Success Modal
-                    document.getElementById('successOrderId').textContent = '#' + orderId;
-                    document.getElementById('successModal').classList.add('active');
-                    // Clear the cart
-                    Cart.clearCart();
-                }
-
-                // --- RATING POPUP LOGIC ---
+                // --- MODAL SEQUENCE LOGIC ---
                 let currentRatingOrder = null;
+                let currentRatingItems = [];
                 let pendingRatings = {}; // { menu_item_id: rating }
 
-                window.showRatingPopup = function (items, orderId) {
+                window.showSuccessModal = function (items, orderId) {
                     currentRatingOrder = orderId;
-                    pendingRatings = {};
+                    currentRatingItems = items;
 
+                    document.getElementById('successOrderId').textContent = '#' + orderId;
+                    document.getElementById('successModal').classList.add('active');
+                };
+
+                // When user clicks "Continue & Rate Order"
+                document.getElementById('btnContinueSuccess').addEventListener('click', () => {
+                    document.getElementById('successModal').classList.remove('active');
+                    showRatingPopup(currentRatingItems, currentRatingOrder);
+                });
+
+                // When user clicks "Skip" directly from success modal
+                document.getElementById('btnSkipSuccess').addEventListener('click', () => {
+                    window.location.href = 'orders.html';
+                });
+
+                window.showRatingPopup = function (items, orderId) {
+                    pendingRatings = {};
                     const container = document.getElementById('ratingItemsContainer');
                     container.innerHTML = '';
 
                     items.forEach(item => {
                         const row = document.createElement('div');
                         row.className = 'rating-item';
+                        row.style.flexDirection = 'column';
+                        row.style.alignItems = 'flex-start';
+                        row.style.gap = '10px';
+
+                        // Default to 5 stars checking
+                        pendingRatings[item.id] = 5;
+
                         row.innerHTML = `
-                            <div style="text-align:left;">
+                            <div style="text-align:left; width: 100%;">
                                 <strong>${item.name}</strong><br>
                                 <small style="color:#666;">₹${item.price.toFixed(2)} x ${item.quantity}</small>
                             </div>
-                            <div class="star-rating" data-id="${item.id}">
-                                <span data-value="5">★</span>
-                                <span data-value="4">★</span>
-                                <span data-value="3">★</span>
-                                <span data-value="2">★</span>
-                                <span data-value="1">★</span>
+                            <div class="rating-options" style="display:flex; gap:15px; width:100%; justify-content:space-between;" data-id="${item.id}">
+                                <label style="display:flex; align-items:center; gap:5px; cursor:pointer;"><input type="radio" name="rating_${item.id}" value="1"> 1★</label>
+                                <label style="display:flex; align-items:center; gap:5px; cursor:pointer;"><input type="radio" name="rating_${item.id}" value="2"> 2★</label>
+                                <label style="display:flex; align-items:center; gap:5px; cursor:pointer;"><input type="radio" name="rating_${item.id}" value="3"> 3★</label>
+                                <label style="display:flex; align-items:center; gap:5px; cursor:pointer;"><input type="radio" name="rating_${item.id}" value="4"> 4★</label>
+                                <label style="display:flex; align-items:center; gap:5px; cursor:pointer;"><input type="radio" name="rating_${item.id}" value="5" checked> 5★</label>
                             </div>
                         `;
                         container.appendChild(row);
 
-                        // Default rating starts empty
-                        pendingRatings[item.id] = 0;
-                    });
-
-                    // Attach click handlers to stars
-                    document.querySelectorAll('.star-rating span').forEach(star => {
-                        star.addEventListener('click', function () {
-                            const parent = this.parentElement;
-                            const dishId = parent.getAttribute('data-id');
-                            const value = parseInt(this.getAttribute('data-value'), 10);
-
-                            // Highlight stars with JS directly to override CSS hover states on click
-                            Array.from(parent.children).forEach(s => {
-                                if (parseInt(s.getAttribute('data-value'), 10) <= value) {
-                                    s.style.color = "var(--clr-primary)";
-                                } else {
-                                    s.style.color = "#ccc";
-                                }
+                        // Attach change listeners to radio buttons
+                        const radios = row.querySelectorAll(`input[name="rating_${item.id}"]`);
+                        radios.forEach(radio => {
+                            radio.addEventListener('change', (e) => {
+                                pendingRatings[item.id] = parseInt(e.target.value, 10);
                             });
-
-                            pendingRatings[dishId] = value;
                         });
                     });
 
@@ -583,12 +586,11 @@
 
                 document.getElementById('skipRatingsBtn').addEventListener('click', () => {
                     document.getElementById('ratingModal').classList.remove('active');
-                    if (currentRatingOrder) {
-                        completeCheckout(currentRatingOrder);
-                    }
+                    window.location.href = 'orders.html';
                 });
 
                 document.getElementById('submitRatingsBtn').addEventListener('click', async () => {
+
                     const btn = document.getElementById('submitRatingsBtn');
                     btn.disabled = true;
                     btn.textContent = "Submitting...";
@@ -611,9 +613,7 @@
                     }
 
                     document.getElementById('ratingModal').classList.remove('active');
-                    if (currentRatingOrder) {
-                        completeCheckout(currentRatingOrder);
-                    }
+                    window.location.href = 'orders.html';
                 });
             });
         });

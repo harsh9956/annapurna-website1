@@ -115,33 +115,18 @@
             try {
                 // Try fetching securely from backend
                 const response = await window.API.request('/orders');
-                if (response.success && response.data) {
+                if (response.success && response.data && response.data.length > 0) {
                     orders = response.data;
                 }
             } catch (error) {
-                console.log("Backend offline. Gracefully falling back to local simulated order history.");
-                // Fallback to LocalStorage
-                const savedOrders = localStorage.getItem('annapurna_orders');
-                orders = savedOrders ? JSON.parse(savedOrders) : [];
+                console.log("Backend offline or no orders found on server. Falling back to local simulated order history.");
+            }
 
-                // Add some mock data if completely empty for demonstration purposes
-                if (orders.length === 0) {
-                    orders = [
-                        {
-                            id: 'ANP-8924',
-                            date: 'Oct 24, 2026, 7:30 PM',
-                            items: [
-                                { name: 'Murgh Makhani (Butter Chicken)', quantity: 2 },
-                                { name: 'Garlic Naan', quantity: 4 },
-                                { name: 'Gulab Jamun (Portion of 3)', quantity: 1 }
-                            ],
-                            total: '47.96',
-                            paymentType: 'online',
-                            status_payment: 'Paid',
-                            status_delivery: 'Delivered'
-                        }
-                    ];
-                    localStorage.setItem('annapurna_orders', JSON.stringify(orders));
+            // Always fallback or merge with LocalStorage if server returns empty or fails
+            if (orders.length === 0) {
+                const savedOrders = localStorage.getItem('annapurna_orders');
+                if (savedOrders) {
+                    orders = JSON.parse(savedOrders);
                 }
             }
 
