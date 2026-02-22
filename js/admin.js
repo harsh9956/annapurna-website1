@@ -52,19 +52,14 @@ async function fetchOrders() {
     tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 2rem;">Fetching latest orders...</td></tr>';
 
     try {
-        const response = await fetch('http://localhost:5000/api/orders/all', {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
+        const result = await window.API.request('/orders/all', {
+            method: 'GET'
         });
 
-        const result = await response.json();
-
-        if (response.ok && result.success) {
+        if (result && result.success) {
             renderOrders(result.data);
         } else {
-            throw new Error(result.message || "Failed to fetch orders");
+            throw new Error(result ? result.message : "Failed to fetch orders");
         }
     } catch (error) {
         console.error('Error fetching admin orders:', error);
@@ -132,21 +127,15 @@ async function updateOrderStatus(orderId) {
     const token = localStorage.getItem('annapurna_token') || sessionStorage.getItem('annapurna_token');
 
     try {
-        const response = await fetch(`http://localhost:5000/api/orders/${orderId}/status`, {
+        const result = await window.API.request(`/orders/${orderId}/status`, {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
             body: JSON.stringify({ status_delivery: newStatus })
         });
 
-        const result = await response.json();
-
-        if (response.ok && result.success) {
+        if (result && result.success) {
             alert(`Order ${orderId} status successfully updated to: ${newStatus}`);
         } else {
-            throw new Error(result.message || "Failed to update status");
+            throw new Error(result ? result.message : "Failed to update status");
         }
     } catch (error) {
         console.error('Error updating order status:', error);
@@ -163,16 +152,14 @@ async function fetchRatings() {
     tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 2rem;">Fetching live ratings...</td></tr>';
 
     try {
-        const response = await fetch('http://localhost:5000/api/menu', {
+        const result = await window.API.request('/menu', {
             method: 'GET'
         });
 
-        const result = await response.json();
-
-        if (response.ok && result.success) {
+        if (result && result.success) {
             renderRatings(result.data);
         } else {
-            throw new Error(result.message || "Failed to fetch menu/ratings");
+            throw new Error(result ? result.message : "Failed to fetch menu/ratings");
         }
     } catch (error) {
         console.error('Error fetching admin ratings:', error);

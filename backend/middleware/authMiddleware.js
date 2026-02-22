@@ -21,6 +21,11 @@ const protect = (req, res, next) => {
             // Attach user to request object
             req.user = decoded;
 
+            // Ensure req.user.id exists (Firebase uses user_id, sub, or uid)
+            if (!req.user.id) {
+                req.user.id = req.user.uid || req.user.user_id || req.user.sub;
+            }
+
             // Auto-elevate admin based on Firebase email
             if (req.user && req.user.email === 'harshpratapsingh826@gmail.com') {
                 req.user.is_admin = 1;
