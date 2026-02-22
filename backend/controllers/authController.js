@@ -78,8 +78,13 @@ exports.loginUser = async (req, res) => {
             // Generate JWT Token
             const jwtSecret = process.env.JWT_SECRET || 'fallback_secret_for_local_dev_only_replace_in_prod';
 
-            // Sign token with user ID; expires in 1 day
-            const token = jwt.sign({ id: row.id, email: row.email, name: row.name }, jwtSecret, { expiresIn: '1d' });
+            // Sign token with user ID and admin status; expires in 1 day
+            const token = jwt.sign({
+                id: row.id,
+                email: row.email,
+                name: row.name,
+                is_admin: row.is_admin
+            }, jwtSecret, { expiresIn: '1d' });
 
             res.status(200).json({
                 message: 'Login successful.',
@@ -87,7 +92,8 @@ exports.loginUser = async (req, res) => {
                 user: {
                     id: row.id,
                     name: row.name,
-                    email: row.email
+                    email: row.email,
+                    is_admin: row.is_admin
                 }
             });
         });

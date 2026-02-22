@@ -25,4 +25,12 @@ const protect = (req, res, next) => {
     }
 };
 
-module.exports = { protect };
+const admin = (req, res, next) => {
+    if (req.user && req.user.is_admin === 1) {
+        next();
+    } else {
+        res.status(403).json({ success: false, message: 'Not authorized as an admin' });
+    }
+};
+
+module.exports = { protect, admin };

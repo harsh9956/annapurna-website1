@@ -31,16 +31,35 @@ document.addEventListener('DOMContentLoaded', () => {
             if (registerLink) {
                 registerLink.style.display = 'none'; // Hide register link
             }
+
+            // Profile Link logic
             const profileLink = document.getElementById('navProfileLink');
             if (profileLink) {
                 profileLink.style.display = 'inline-block';
             }
-        } else {
-            // User is NOT logged in. Ensure profile link is explicitly hidden.
-            const profileLink = document.getElementById('navProfileLink');
-            if (profileLink) {
-                profileLink.style.display = 'none';
+
+            // Admin Panel Link logic
+            const adminLink = document.getElementById('navAdminLink');
+            if (adminLink) {
+                try {
+                    const user = JSON.parse(localStorage.getItem('annapurna_user') || '{}');
+                    if (user.is_admin === 1) {
+                        adminLink.style.display = 'inline-block';
+                    } else {
+                        adminLink.style.display = 'none';
+                    }
+                } catch (e) {
+                    adminLink.style.display = 'none';
+                }
             }
+
+        } else {
+            // User is NOT logged in. Ensure profile and admin links are explicitly hidden.
+            const profileLink = document.getElementById('navProfileLink');
+            if (profileLink) profileLink.style.display = 'none';
+
+            const adminLink = document.getElementById('navAdminLink');
+            if (adminLink) adminLink.style.display = 'none';
         }
     }
     // Navbar Scroll Effect

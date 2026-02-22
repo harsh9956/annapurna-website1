@@ -21,6 +21,7 @@ function initDb() {
             email TEXT NOT NULL UNIQUE,
             phone TEXT,
             password TEXT NOT NULL,
+            is_admin INTEGER DEFAULT 0,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )
     `;
@@ -54,7 +55,21 @@ function initDb() {
 
     db.serialize(() => {
         db.run(usersTableQuery, (err) => {
-            if (err) console.error('Error creating users table:', err.message);
+            if (err) {
+                console.error('Error creating users table:', err.message);
+            } else {
+                // Try to add is_admin column if it doesn't exist (for existing databases)
+                db.run("ALTER TABLE users ADD COLUMN is_admin INTEGER DEFAULT 0", () => {
+                    // Ignore error if column already exists
+                });
+
+                // Auto-elevate the restaurant owner's email to admin
+                const ownerEmail = "harshpratapsingh826@gmail.com";
+                db.run("UPDATE users SET is_admin = 1 WHERE email = ?", [ownerEmail], function (err) {
+                    if (err) console.error("Error elevating admin:", err);
+                    else if (this.changes > 0) console.log(`Elevated ${ownerEmail} to Admin.`);
+                });
+            }
         });
 
         db.run(menuTableQuery, (err) => {

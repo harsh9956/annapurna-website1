@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Annapurna</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .admin-section {
+            padding: 120px 0 60px 0;
+            min-height: 80vh;
+            background-color: var(--clr-bg);
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            background-color: var(--clr-white);
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .admin-header h1 {
+            font-family: var(--font-heading);
+            color: var(--clr-primary);
+            margin-bottom: 0;
+        }
+
+        .admin-table-wrapper {
+            background-color: var(--clr-white);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            overflow-x: auto;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .admin-table th,
+        .admin-table td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .admin-table th {
+            background-color: #fca31110;
+            color: var(--clr-text);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        .admin-table tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .status-select {
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: inherit;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        .status-select:focus {
+            outline: none;
+            border-color: var(--clr-primary);
+        }
+
+        /* Order Items List inside Table */
+        .order-items-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        .order-items-list li {
+            margin-bottom: 0.2rem;
+        }
+
+        /* Status Badge for Payment */
+        .badge {
+            display: inline-block;
+            padding: 0.25em 0.6em;
+            font-size: 0.75em;
+            font-weight: 700;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 0.25rem;
+        }
+
+        .badge-success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .badge-warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+
+        .badge-info {
+            background-color: #17a2b8;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar (Scrolled state forced) -->
+    <header class="navbar scrolled" id="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo" style="display:flex; align-items:center; color: var(--clr-primary);">
+                <img src="assets/logo.png" alt="Annapurna Logo" style="height: 40px; margin-right: 10px;">
+                <span style="font-weight: 700; font-family: 'Playfair Display', serif;">Annapurna</span>
+            </a>
+            <button class="mobile-toggle" aria-label="Toggle navigation">
+                <span class="bar" style="background-color: var(--clr-text);"></span>
+                <span class="bar" style="background-color: var(--clr-text);"></span>
+                <span class="bar" style="background-color: var(--clr-text);"></span>
+            </button>
+            <nav class="nav-links">
+                <a href="index.html" class="nav-link" style="color: var(--clr-text);">Home</a>
+                <a href="admin.html" class="nav-link active" id="navAdminLink" style="color: var(--clr-text);">Admin
+                    Panel</a>
+                <a href="profile.html" class="nav-link" id="navProfileLink" style="color: var(--clr-text);">Profile</a>
+                <a href="login.html" class="nav-link" style="color: var(--clr-text);">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="admin-section">
+        <div class="container fade-up" style="max-width: 1200px;">
+            <div class="admin-header">
+                <div>
+                    <h1>Owner Dashboard</h1>
+                    <p style="margin-bottom: 0; color: #666;">Manage incoming orders and update delivery statuses.</p>
+                </div>
+                <button class="btn btn-outline" onclick="fetchOrders()">🔄 Refresh Orders</button>
+            </div>
+
+            <div class="admin-table-wrapper">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Order ID & Date</th>
+                            <th>Customer Details</th>
+                            <th>Items Ordered</th>
+                            <th>Total Amount</th>
+                            <th>Payment</th>
+                            <th>Delivery Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminOrdersBody">
+                        <tr>
+                            <td colspan="7" style="text-align: center; padding: 3rem;">Loading orders...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <script src="js/script.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+
+</html>
