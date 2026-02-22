@@ -31,6 +31,16 @@ document.addEventListener('DOMContentLoaded', () => {
             if (registerLink) {
                 registerLink.style.display = 'none'; // Hide register link
             }
+            const profileLink = document.getElementById('navProfileLink');
+            if (profileLink) {
+                profileLink.style.display = 'inline-block';
+            }
+        } else {
+            // User is NOT logged in. Ensure profile link is explicitly hidden.
+            const profileLink = document.getElementById('navProfileLink');
+            if (profileLink) {
+                profileLink.style.display = 'none';
+            }
         }
     }
     // Navbar Scroll Effect

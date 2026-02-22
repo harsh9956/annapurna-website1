@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Annapurna Authentic Indian Cuisine</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .profile-section {
+            padding: 120px 0 60px 0;
+            min-height: 80vh;
+            background-color: var(--clr-bg);
+        }
+
+        .profile-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: var(--clr-white);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .profile-header {
+            background-color: var(--clr-primary);
+            color: var(--clr-white);
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background-color: var(--clr-white);
+            color: var(--clr-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 0 auto 1rem auto;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            font-family: var(--font-heading);
+        }
+
+        .profile-header h1 {
+            font-family: var(--font-heading);
+            margin-bottom: 0.5rem;
+            font-size: 2rem;
+        }
+
+        .profile-header p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .profile-body {
+            padding: 2rem;
+        }
+
+        .profile-info-group {
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1rem;
+        }
+
+        .profile-info-group:last-child {
+            border-bottom: none;
+        }
+
+        .profile-info-label {
+            font-size: 0.9rem;
+            color: var(--clr-text-light);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .profile-info-value {
+            font-size: 1.2rem;
+            color: var(--clr-text);
+            font-weight: 500;
+        }
+
+        .profile-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            justify-content: center;
+        }
+
+        .btn-logout {
+            background-color: transparent;
+            color: #d32f2f;
+            border: 1px solid #d32f2f;
+        }
+
+        .btn-logout:hover {
+            background-color: #d32f2f;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar (Scrolled state forced) -->
+    <header class="navbar scrolled" id="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo" style="display:flex; align-items:center; color: var(--clr-primary);">
+                <img src="assets/logo.png" alt="Annapurna Logo" style="height: 40px; margin-right: 10px;">
+                <span style="font-weight: 700; font-family: 'Playfair Display', serif;">Annapurna</span>
+            </a>
+            <button class="mobile-toggle" aria-label="Toggle navigation">
+                <span class="bar" style="background-color: var(--clr-text);"></span>
+                <span class="bar" style="background-color: var(--clr-text);"></span>
+                <span class="bar" style="background-color: var(--clr-text);"></span>
+            </button>
+            <nav class="nav-links">
+                <a href="index.html" class="nav-link" style="color: var(--clr-text);">Home</a>
+                <a href="index.html#menu" class="nav-link" style="color: var(--clr-text);">Menu</a>
+                <a href="orders.html" class="nav-link" style="color: var(--clr-text);">My Orders</a>
+                <a href="profile.html" class="nav-link active" id="navProfileLink"
+                    style="color: var(--clr-text);">Profile</a>
+                <a href="login.html" class="nav-link" style="color: var(--clr-text);">Logout</a>
+                <a href="checkout.html" class="cart-nav-icon" aria-label="Shopping Cart">
+                    <svg xmlns="http://www.apache.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    <span class="cart-badge" style="display: none;">0</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="profile-section">
+        <div class="container fade-up">
+            <div class="profile-container">
+                <div class="profile-header">
+                    <div class="profile-avatar" id="profileAvatar">U</div>
+                    <h1 id="profileName">Loading...</h1>
+                    <p>Annapurna Member</p>
+                </div>
+
+                <div class="profile-body">
+                    <div class="profile-info-group">
+                        <div class="profile-info-label">Full Name</div>
+                        <div class="profile-info-value" id="displayProfileName">Loading...</div>
+                    </div>
+
+                    <div class="profile-info-group">
+                        <div class="profile-info-label">Email Address</div>
+                        <div class="profile-info-value" id="displayProfileEmail">Loading...</div>
+                    </div>
+
+                    <div class="profile-info-group">
+                        <div class="profile-info-label">Account ID</div>
+                        <div class="profile-info-value" id="displayProfileId"
+                            style="font-family: monospace; font-size: 1rem; color: #666;">Loading...</div>
+                    </div>
+
+                    <div class="profile-actions">
+                        <a href="orders.html" class="btn btn-primary">View Order History</a>
+                        <button id="logoutBtnProfile" class="btn btn-logout">Sign Out</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-col"
+            style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; width: 100%;">
+            <a href="index.html" class="logo"
+                style="display:flex; align-items:center; color: white; margin-bottom: 1rem;">
+                <img src="assets/logo.png" alt="Annapurna Logo" style="height: 100px; border-radius: 50%;">
+            </a>
+            <p>Authentic Indian cuisine made with passion, tradition, and the finest ingredients.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/script.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/profile.js"></script>
+</body>
+
+</html>
