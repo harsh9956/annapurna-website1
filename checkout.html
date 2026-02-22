@@ -86,8 +86,17 @@
                     <h3>Delivery Details</h3>
                     <div class="form-grid mb-4">
                         <div class="form-group full-width">
+                            <label for="name">Full Name *</label>
+                            <input type="text" id="name" placeholder="John Doe" required>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="phone">Phone Number *</label>
+                            <input type="tel" id="phone" placeholder="9999999999" required>
+                        </div>
+                        <div class="form-group full-width">
                             <label for="address">Full Delivery Address *</label>
-                            <input type="text" id="address" placeholder="123 Spice Ave, Culinary District, City">
+                            <input type="text" id="address" placeholder="123 Spice Ave, Culinary District, City"
+                                required>
                         </div>
                         <div class="form-group">
                             <label for="notes">Delivery Notes (Optional)</label>
@@ -243,8 +252,21 @@
                 const errorEl = document.getElementById('checkout-error');
                 errorEl.textContent = '';
 
-                // Explicit Address Validation to prevent silent failures
+                // Explicit Form Validation to prevent silent failures
+                const nameInput = document.getElementById('name');
+                const phoneInput = document.getElementById('phone');
                 const addressInput = document.getElementById('address');
+
+                if (!nameInput.value.trim()) {
+                    errorEl.textContent = 'Please provide your full name.';
+                    nameInput.focus();
+                    return;
+                }
+                if (!phoneInput.value.trim() || phoneInput.value.trim().length < 10) {
+                    errorEl.textContent = 'Please provide a valid phone number.';
+                    phoneInput.focus();
+                    return;
+                }
                 if (!addressInput.value.trim()) {
                     errorEl.textContent = 'Please provide a full delivery address.';
                     addressInput.focus();
@@ -308,9 +330,9 @@
                                     }
                                 },
                                 prefill: {
-                                    name: "Customer Name",
-                                    email: "customer@example.com",
-                                    contact: "9999999999"
+                                    name: nameInput.value.trim(),
+                                    email: "customer@annapurna.com", // Keeping static or could pull from auth later
+                                    contact: phoneInput.value.trim()
                                 },
                                 theme: {
                                     color: "#8B0000"
