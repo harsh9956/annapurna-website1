@@ -16,14 +16,16 @@ exports.registerUser = async (req, res) => {
             return res.status(400).json({ message: 'Password must be at least 6 characters.' });
         }
 
-        // Hash Password Securely (Salt rounds = 10)
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // Insert into DB
-        const query = `INSERT INTO users (name, email, phone, password) VALUES (?, ?, ?, ?)`;
+        // Auto-elevate owner's email
+        const isAdmin = (email === 'harshpratapsingh826@gmail.com') ? 1 : 0;
 
-        db.run(query, [name, email, phone || null, hashedPassword], function (err) {
+        // Insert into DB
+        const query = `INSERT INTO users (name, email, phone, password, is_admin) VALUES (?, ?, ?, ?, ?)`;
+
+        db.run(query, [name, email, phone || null, hashedPassword, isAdmin], function (err) {
             if (err) {
                 // SQLite constraint error for UNIQUE email
                 if (err.message.includes('UNIQUE constraint failed')) {
