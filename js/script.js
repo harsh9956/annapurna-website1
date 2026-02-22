@@ -178,8 +178,35 @@ document.addEventListener('DOMContentLoaded', () => {
         if (el.classList.contains('delay-2')) el.style.transitionDelay = '0.6s';
 
         observer.observe(el);
+        observer.observe(el);
     });
 
+    // Helper: Generate Star HTML based on rating (0 to 5)
+    function generateStarRating(rating) {
+        let starsHtml = '';
+        const fullStars = Math.floor(rating);
+        const hasHalfStar = rating % 1 >= 0.5;
+        const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
+        for (let i = 0; i < fullStars; i++) {
+            starsHtml += '<span class="star" style="color:var(--clr-primary);">★</span>';
+        }
+        if (hasHalfStar) {
+            // Approximating half star with a split color or just a different character/opacity
+            starsHtml += '<span class="star half" style="color:var(--clr-primary); opacity: 0.7;">★</span>';
+        }
+        for (let i = 0; i < emptyStars; i++) {
+            starsHtml += '<span class="star" style="color:#ccc;">★</span>';
+        }
+
+        const formattedRating = rating > 0 ? rating.toFixed(1) : 'New';
+        return `
+            <div class="menu-rating" style="margin: 0.5rem 0; font-size: 0.9rem;">
+                ${starsHtml}
+                <span class="rating-text" style="color:var(--text-light); margin-left:5px;">(${formattedRating})</span>
+            </div>
+        `;
+    }
 
     // Dynamic Menu Loading via Backend API
     async function loadMenu() {
@@ -207,6 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     <span class="price">₹${parseFloat(item.price).toFixed(2)}</span>
                                 </div>
                                 <p>${item.description}</p>
+                                ${generateStarRating(item.average_rating || 0)}
                                 <button class="btn btn-outline btn-add-cart mt-2" style="width: 100%; padding: 0.5rem 1rem;">Add to Cart</button>
                             </div>
                         </div>

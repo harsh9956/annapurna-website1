@@ -121,6 +121,45 @@
             background-color: #17a2b8;
             color: white;
         }
+
+        /* Admin Tabs */
+        .admin-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #eee;
+        }
+
+        .admin-tab-btn {
+            background: none;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.3s ease;
+        }
+
+        .admin-tab-btn.active {
+            color: var(--clr-primary);
+            border-bottom-color: var(--clr-primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .rating-stars {
+            color: var(--clr-primary);
+            letter-spacing: 2px;
+        }
     </style>
 </head>
 
@@ -152,30 +191,63 @@
             <div class="admin-header">
                 <div>
                     <h1>Owner Dashboard</h1>
-                    <p style="margin-bottom: 0; color: #666;">Manage incoming orders and update delivery statuses.</p>
+                    <p style="margin-bottom: 0; color: #666;">Manage incoming orders and monitor customer dish ratings.
+                    </p>
                 </div>
-                <button class="btn btn-outline" onclick="fetchOrders()">🔄 Refresh Orders</button>
+                <button class="btn btn-outline" id="refreshBtn" onclick="fetchOrders()">🔄 Refresh Data</button>
             </div>
 
-            <div class="admin-table-wrapper">
-                <table class="admin-table">
-                    <thead>
-                        <tr>
-                            <th>Order ID & Date</th>
-                            <th>Customer Details</th>
-                            <th>Items Ordered</th>
-                            <th>Total Amount</th>
-                            <th>Payment</th>
-                            <th>Delivery Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="adminOrdersBody">
-                        <tr>
-                            <td colspan="7" style="text-align: center; padding: 3rem;">Loading orders...</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <!-- Tabs -->
+            <div class="admin-tabs fade-up delay-1">
+                <button class="admin-tab-btn active" onclick="switchTab('orders')">Live Orders</button>
+                <button class="admin-tab-btn" onclick="switchTab('ratings')">Dish Ratings & Reviews</button>
+            </div>
+
+            <!-- Orders Tab Content -->
+            <div id="tab-orders" class="tab-content active fade-up delay-2">
+                <div class="admin-table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID & Date</th>
+                                <th>Customer Details</th>
+                                <th>Items Ordered</th>
+                                <th>Total Amount</th>
+                                <th>Payment</th>
+                                <th>Delivery Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminOrdersBody">
+                            <tr>
+                                <td colspan="7" style="text-align: center; padding: 3rem;">Loading orders...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Ratings Tab Content -->
+            <div id="tab-ratings" class="tab-content fade-up delay-2"
+                style="animation: none; opacity: 1; transform: translateY(0);">
+                <div class="admin-table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Dish Info</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Average Rating</th>
+                                <th>Total Reviews</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminRatingsBody">
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 3rem;">Loading dish ratings...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </section>

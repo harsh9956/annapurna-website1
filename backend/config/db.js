@@ -34,7 +34,23 @@ function initDb() {
             description TEXT,
             price REAL NOT NULL,
             category TEXT NOT NULL,
-            image_url TEXT
+            image_url TEXT,
+            rating_sum REAL DEFAULT 0,
+            rating_count INTEGER DEFAULT 0
+        )
+    `;
+
+    // 2.1 Dish Reviews Table
+    const reviewsTableQuery = `
+        CREATE TABLE IF NOT EXISTS dish_reviews (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            order_id TEXT NOT NULL,
+            menu_item_id TEXT NOT NULL,
+            user_id TEXT,
+            rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY(order_id) REFERENCES orders(id),
+            FOREIGN KEY(menu_item_id) REFERENCES menu_items(id)
         )
     `;
 
@@ -84,6 +100,14 @@ function initDb() {
             if (err) console.error('Error creating orders table:', err.message);
             else console.log('Database tables initialized successfully.');
         });
+
+        db.run(reviewsTableQuery, (err) => {
+            if (err) console.error('Error creating dish_reviews table:', err.message);
+        });
+
+        // Add rating columns to existing menu_items table if they don't exist
+        db.run("ALTER TABLE menu_items ADD COLUMN rating_sum REAL DEFAULT 0", () => { });
+        db.run("ALTER TABLE menu_items ADD COLUMN rating_count INTEGER DEFAULT 0", () => { });
     });
 }
 
@@ -93,15 +117,16 @@ function seedMenu() {
 
         if (row.count === 0) {
             console.log("Seeding Menu Items to Database...");
-            const insert = `INSERT INTO menu_items (id, name, description, price, category, image_url) VALUES (?, ?, ?, ?, ?, ?)`;
+            const insert = `INSERT INTO menu_items (id, name, description, price, category, image_url, rating_sum, rating_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
 
+            // Adding initial seeded ratings. For example, a 4.5 average based on 2 reviews means rating_sum = 9, rating_count = 2
             const seedData = [
-                ['m_001', 'Punjabi Samosa', 'Crispy pastry filled with spiced potatoes and peas, served with mint chutney.', 6.99, 'starter', 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&q=80&w=600'],
-                ['m_002', 'Chicken Tikka', 'Tender chicken pieces marinated in yogurt and spices, grilled in a tandoor.', 10.99, 'starter', 'https://images.unsplash.com/photo-1617692855027-33b14f061079?auto=format&fit=crop&q=80&w=600'],
-                ['m_003', 'Murgh Makhani', 'Classic butter chicken in a rich, creamy tomato gravy with traditional spices.', 16.99, 'main', 'https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?auto=format&fit=crop&q=80&w=600'],
-                ['m_004', 'Palak Paneer', 'Fresh cottage cheese cubes simmered in a smooth, spiced spinach purée.', 14.99, 'main', 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&q=80&w=600'],
-                ['m_005', 'Gulab Jamun', 'Warm, deep-fried milk dumplings soaked in a fragrant rose and cardamom syrup.', 5.99, 'dessert', 'https://images.unsplash.com/photo-1511690078903-71dc5a49f5e3?auto=format&fit=crop&q=80&w=600'],
-                ['m_006', 'Mango Lassi', 'A refreshing, creamy yogurt drink blended with sweet Alphonso mangoes.', 4.99, 'beverage', 'https://images.unsplash.com/photo-1514326640560-7d063ef2aed5?auto=format&fit=crop&q=80&w=600']
+                ['m_001', 'Punjabi Samosa', 'Crispy pastry filled with spiced potatoes and peas, served with mint chutney.', 6.99, 'starter', 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&q=80&w=600', 9, 2],
+                ['m_002', 'Chicken Tikka', 'Tender chicken pieces marinated in yogurt and spices, grilled in a tandoor.', 10.99, 'starter', 'https://images.unsplash.com/photo-1617692855027-33b14f061079?auto=format&fit=crop&q=80&w=600', 14, 3],
+                ['m_003', 'Murgh Makhani', 'Classic butter chicken in a rich, creamy tomato gravy with traditional spices.', 16.99, 'main', 'https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?auto=format&fit=crop&q=80&w=600', 24, 5],
+                ['m_004', 'Palak Paneer', 'Fresh cottage cheese cubes simmered in a smooth, spiced spinach purée.', 14.99, 'main', 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&q=80&w=600', 19, 4],
+                ['m_005', 'Gulab Jamun', 'Warm, deep-fried milk dumplings soaked in a fragrant rose and cardamom syrup.', 5.99, 'dessert', 'https://images.unsplash.com/photo-1511690078903-71dc5a49f5e3?auto=format&fit=crop&q=80&w=600', 5, 1],
+                ['m_006', 'Mango Lassi', 'A refreshing, creamy yogurt drink blended with sweet Alphonso mangoes.', 4.99, 'beverage', 'https://images.unsplash.com/photo-1514326640560-7d063ef2aed5?auto=format&fit=crop&q=80&w=600', 8, 2]
             ];
 
             db.serialize(() => {

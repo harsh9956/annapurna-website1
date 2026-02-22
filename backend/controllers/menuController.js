@@ -6,6 +6,16 @@ exports.getMenu = (req, res) => {
             console.error('Error fetching menu:', err);
             return res.status(500).json({ success: false, message: 'Server error fetching menu.' });
         }
-        res.status(200).json({ success: true, data: rows });
+
+        // Calculate average rating for each item before sending to frontend
+        const menuWithRatings = rows.map(item => {
+            const avgRating = item.rating_count > 0 ? (item.rating_sum / item.rating_count).toFixed(1) : 0;
+            return {
+                ...item,
+                average_rating: parseFloat(avgRating)
+            };
+        });
+
+        res.status(200).json({ success: true, data: menuWithRatings });
     });
 };

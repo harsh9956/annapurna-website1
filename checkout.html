@@ -164,6 +164,21 @@
         </div>
     </div>
 
+    <!-- Rating Modal (Hidden by Default) -->
+    <div id="ratingModal" class="rating-modal">
+        <div class="rating-content fade-up" style="transform:translateY(0); opacity:1;">
+            <h2>How was your food? 😋</h2>
+            <p>Please rate the items you just ordered so we can improve!</p>
+            <div id="ratingItemsContainer" style="max-height: 400px; overflow-y: auto;">
+                <!-- Dynamic items injected here -->
+            </div>
+            <button id="submitRatingsBtn" class="btn btn-primary mt-3" style="width:100%; padding:1rem;">Submit Ratings
+                & View Orders</button>
+            <button id="skipRatingsBtn" class="btn btn-outline mt-2" style="width:100%; border:none;">Skip for
+                now</button>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="js/api.js"></script>
@@ -305,24 +320,22 @@
                                 handler: async function (response) {
                                     try {
                                         // Verify Signature
-                                        const verifyRes = await window.API.request('/payment/verify', {
+                                        const verifyData = await window.API.request('/payment/verify', {
                                             method: 'POST',
                                             body: JSON.stringify({
-                                                razorpay_order_id: response.razorpay_order_id,
                                                 razorpay_payment_id: response.razorpay_payment_id,
-                                                razorpay_signature: response.razorpay_signature,
-                                                orderData: {
-                                                    items: Cart.items,
-                                                    total: total.toFixed(2),
-                                                    paymentType: paymentType
-                                                }
+                                                razorpay_order_id: response.razorpay_order_id,
+                                                razorpay_signature: response.razorpay_signature
                                             })
                                         });
 
-                                        if (verifyRes.success) {
-                                            completeCheckout(verifyRes.data.orderId);
+                                        if (verifyData.success) {
+                                            const newOrderId = verifyData.data.orderId;
+                                            Cart.clear();
+                                            showRatingPopup(Cart.items, newOrderId);
                                         } else {
-                                            errorEl.textContent = "Payment verification failed.";
+                                            errorEl.textContent = "Payment Verification Failed: " + verifyData.message;
+                                            resetBtn();
                                         }
                                     } catch (err) {
                                         console.error(err);
@@ -363,18 +376,21 @@
                     // Cash on Delivery - Legacy Flow
                     try {
                         // Try to process via real Backend securely
-                        const response = await window.API.request('/orders', {
+                        const orderData = {
+                            items: Cart.items,
+                            paymentType: paymentType
+                        };
+                        const data = await window.API.request('/orders', {
                             method: 'POST',
-                            body: JSON.stringify({
-                                items: Cart.items,
-                                paymentType: paymentType
-                            })
+                            body: JSON.stringify(orderData)
                         });
 
-                        if (response.success) {
-                            // Order securely calculated and saved in SQLite
-                            const newOrder = response.data;
-                            completeCheckout(newOrder.orderId);
+                        if (data.success) {
+                            const newOrderId = data.data.orderId;
+                            Cart.clear();
+                            showRatingPopup(Cart.items, newOrderId);
+                        } else {
+                            throw new Error(data.message || 'Payment verification failed');
                         }
                     } catch (error) {
                         if (error.isNetworkError) {
@@ -398,7 +414,8 @@
                             orderHistory.unshift(newOrder);
                             localStorage.setItem('annapurna_orders', JSON.stringify(orderHistory));
 
-                            completeCheckout(newOrder.id);
+                            Cart.clear();
+                            showRatingPopup(Cart.items, newOrder.id);
                         } else {
                             // True API error (e.g. invalid item ID, unauthorized)
                             errorEl.textContent = error.message;
