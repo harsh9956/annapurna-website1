@@ -409,8 +409,9 @@
 
                                         if (verifyData.success) {
                                             const newOrderId = verifyData.data.orderId;
-                                            Cart.clear();
-                                            showRatingPopup(Cart.items, newOrderId);
+                                            const orderItems = [...Cart.items];
+                                            Cart.clearCart();
+                                            showRatingPopup(orderItems, newOrderId);
                                         } else {
                                             errorEl.textContent = "Payment Verification Failed: " + verifyData.message;
                                             resetBtn();
@@ -465,8 +466,9 @@
 
                         if (data.success) {
                             const newOrderId = data.data.orderId;
-                            Cart.clear();
-                            showRatingPopup(Cart.items, newOrderId);
+                            const orderItems = [...Cart.items];
+                            Cart.clearCart();
+                            showRatingPopup(orderItems, newOrderId);
                         } else {
                             throw new Error(data.message || 'Payment verification failed');
                         }
@@ -492,8 +494,9 @@
                             orderHistory.unshift(newOrder);
                             localStorage.setItem('annapurna_orders', JSON.stringify(orderHistory));
 
-                            Cart.clear();
-                            showRatingPopup(Cart.items, newOrder.id);
+                            const orderItems = [...Cart.items];
+                            Cart.clearCart();
+                            showRatingPopup(orderItems, newOrder.id);
                         } else {
                             // True API error (e.g. invalid item ID, unauthorized)
                             errorEl.textContent = error.message;
