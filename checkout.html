@@ -344,7 +344,10 @@
                 e.preventDefault();
 
                 const errorEl = document.getElementById('checkout-error');
+                const submitBtn = document.getElementById('placeOrderBtn');
                 errorEl.textContent = '';
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = 'Processing...';
 
                 // Explicit Form Validation to prevent silent failures
                 const nameInput = document.getElementById('name');
@@ -354,17 +357,20 @@
                 if (!nameInput.value.trim()) {
                     errorEl.textContent = 'Please provide your full name.';
                     nameInput.focus();
+                    resetBtn(submitBtn);
                     return;
                 }
                 const phonePattern = /^[0-9]{10}$/;
                 if (!phoneInput.value.trim() || !phonePattern.test(phoneInput.value.trim())) {
                     errorEl.textContent = 'Please enter exactly a 10-digit phone number.';
                     phoneInput.focus();
+                    resetBtn(submitBtn);
                     return;
                 }
                 if (!addressInput.value.trim()) {
                     errorEl.textContent = 'Please provide a full delivery address.';
                     addressInput.focus();
+                    resetBtn(submitBtn);
                     return;
                 }
 
@@ -372,6 +378,7 @@
                 const paymentRadio = document.querySelector('input[name="paymentType"]:checked');
                 if (!paymentRadio) {
                     errorEl.textContent = 'Please select a payment method.';
+                    resetBtn(submitBtn);
                     return;
                 }
                 const paymentType = paymentRadio.value;
@@ -414,13 +421,13 @@
                                             showRatingPopup(orderItems, newOrderId);
                                         } else {
                                             errorEl.textContent = "Payment Verification Failed: " + verifyData.message;
-                                            resetBtn();
+                                            resetBtn(submitBtn);
                                         }
                                     } catch (err) {
                                         console.error(err);
                                         errorEl.textContent = "Error saving verified order.";
                                     } finally {
-                                        resetBtn();
+                                        resetBtn(submitBtn);
                                     }
                                 },
                                 prefill: {
@@ -436,19 +443,19 @@
                             const rzp = new window.Razorpay(options);
                             rzp.on('payment.failed', function (response) {
                                 errorEl.textContent = "Razorpay Payment Failed: " + response.error.description;
-                                resetBtn();
+                                resetBtn(submitBtn);
                             });
                             rzp.open();
 
                         } else {
                             errorEl.textContent = "Could not initialize Razorpay order.";
-                            resetBtn();
+                            resetBtn(submitBtn);
                         }
 
                     } catch (err) {
                         console.error('Razorpay Error:', err);
                         errorEl.textContent = "Unable to connect to payment gateway. Is backend running?";
-                        resetBtn();
+                        resetBtn(submitBtn);
                     }
 
                 } else {
@@ -500,14 +507,14 @@
                         } else {
                             // True API error (e.g. invalid item ID, unauthorized)
                             errorEl.textContent = error.message;
-                            resetBtn();
+                            resetBtn(submitBtn);
                         }
                     }
                 }
 
-                function resetBtn() {
-                    btn.innerHTML = 'Place Order • ' + btnTotalEl.textContent;
-                    btn.disabled = false;
+                function resetBtn(btnElement) {
+                    btnElement.innerHTML = 'Place Order • ' + btnTotalEl.textContent;
+                    btnElement.disabled = false;
                 }
 
                 function completeCheckout(orderId) {
