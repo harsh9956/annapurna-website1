@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Annapurna - Authentic Indian Cuisine</title>
+    <meta name="description"
+        content="Experience the rich, authentic flavors of India at Annapurna. Tradition in every bite.">
+    <!-- Google Fonts: Playfair Display for Headings, Outfit for Body -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <header class="navbar" id="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo">Annapurna<span>.</span></a>
+            <button class="mobile-toggle" aria-label="Toggle navigation">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+            <nav class="nav-links">
+                <a href="#home" class="nav-link active">Home</a>
+                <a href="#about" class="nav-link">About Us</a>
+                <a href="#menu" class="nav-link">Menu</a>
+                <a href="#gallery" class="nav-link">Gallery</a>
+                <a href="#contact" class="nav-link">Contact</a>
+                <a href="login.html" class="nav-link">Login</a>
+                <a href="register.html" class="nav-link">Register</a>
+                <a href="checkout.html" class="cart-nav-icon" aria-label="Shopping Cart">
+                    <svg xmlns="http://www.apache.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    <span class="cart-badge" style="display: none;">0</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content container">
+            <h1 class="fade-up">Tradition in <span class="highlight-text">Every Bite</span></h1>
+            <p class="fade-up delay-1">Discover the vibrant, authentic flavors of India, crafted with purity, love, and
+                generations of culinary heritage.</p>
+            <div class="hero-buttons fade-up delay-2">
+                <a href="#menu" class="btn btn-primary">Order Now</a>
+                <a href="#about" class="btn btn-secondary">View Menu</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about section-padding">
+        <div class="container about-container">
+            <div class="about-image fade-up">
+                <img src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&q=80&w=800"
+                    alt="Our Chef Cooking Authentic Indian Food" id="about-img">
+            </div>
+            <div class="about-text fade-up delay-1">
+                <h2 class="section-title">Our <span class="highlight-text">Story</span></h2>
+                <p>Welcome to Annapurna, where every dish tells a story of tradition, spices, and unparalleled culinary
+                    devotion. Rooted in the heart of India's royal kitchens, we bring you recipes passed down through
+                    generations.</p>
+                <p>We source only the freshest ingredients and authentic spices to ensure that every bite offers a true
+                    taste of home. Whether you're craving a fiery curry, soft buttery naan, or a sweet decadent dessert,
+                    your journey to culinary bliss starts here.</p>
+                <a href="#menu" class="btn btn-primary mt-2">Explore Menu</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section id="menu" class="menu section-padding bg-alt">
+        <div class="container">
+            <div class="section-header text-center fade-up">
+                <h2 class="section-title">Discover Our <span class="highlight-text">Menu</span></h2>
+                <p>A curated selection of India's finest culinary treasures.</p>
+            </div>
+
+            <div class="menu-categories fade-up delay-1">
+                <button class="menu-btn active" data-filter="all">All</button>
+                <button class="menu-btn" data-filter="starter">Starters</button>
+                <button class="menu-btn" data-filter="main">Main Course</button>
+                <button class="menu-btn" data-filter="dessert">Desserts</button>
+                <button class="menu-btn" data-filter="beverage">Beverages</button>
+            </div>
+
+            <div class="menu-grid">
+                <!-- Starter 1 -->
+                <div class="menu-item fade-up mix starter all">
+                    <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&q=80&w=600"
+                        alt="Punjabi Samosa">
+                    <div class="menu-item-info">
+                        <div class="menu-item-header">
+                            <h3>Punjabi Samosa</h3>
+                            <span class="price">₹6.99</span>
+                        </div>
+                        <p>Crispy pastry filled with spiced potatoes and peas, served with mint chutney.</p>
+                        <button class="btn btn-outline btn-add-cart mt-2" style="width: 100%; padding: 0.5rem 1rem;">Add
+                            to Cart</button>
+                    </div>
+                </div>
+                <!-- Main 1 -->
+                <div class="menu-item fade-up delay-1 mix main all">
+                    <img src="https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?auto=format&fit=crop&q=80&w=600"
+                        alt="Butter Chicken">
+                    <div class="menu-item-info">
+                        <div class="menu-item-header">
+                            <h3>Murgh Makhani</h3>
+                            <span class="price">₹16.99</span>
+                        </div>
+                        <p>Tender chicken simmered in a rich, creamy tomato and butter gravy.</p>
+                        <button class="btn btn-outline btn-add-cart mt-2" style="width: 100%; padding: 0.5rem 1rem;">Add
+                            to Cart</button>
+                    </div>
+                </div>
+                <!-- Main 2 -->
+                <div class="menu-item fade-up delay-2 mix main all">
+                    <img src="https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&q=80&w=600"
+                        alt="Palak Paneer">
+                    <div class="menu-item-info">
+                        <div class="menu-item-header">
+                            <h3>Palak Paneer</h3>
+                            <span class="price">₹14.99</span>
+                        </div>
+                        <p>Cubes of fresh cottage cheese cooked in a smooth, spiced spinach purée.</p>
+                        <button class="btn btn-outline btn-add-cart mt-2" style="width: 100%; padding: 0.5rem 1rem;">Add
+                            to Cart</button>
+                    </div>
+                </div>
+                <!-- Dessert 1 -->
+                <div class="menu-item fade-up delay-1 mix dessert all">
+                    <img src="https://images.unsplash.com/photo-1511690078903-71dc5a49f5e3?auto=format&fit=crop&q=80&w=600"
+                        alt="Gulab Jamun">
+                    <div class="menu-item-info">
+                        <div class="menu-item-header">
+                            <h3>Gulab Jamun</h3>
+                            <span class="price">₹5.99</span>
+                        </div>
+                        <p>Deep-fried milk dumplings soaked in fragrant rose and cardamom syrup.</p>
+                        <button class="btn btn-outline btn-add-cart mt-2" style="width: 100%; padding: 0.5rem 1rem;">Add
+                            to Cart</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-4 fade-up">
+                <a href="assets/Annapurna_Menu.txt" download="Annapurna_Menu.txt" class="btn btn-primary">Download Full
+                    Menu</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="gallery section-padding">
+        <div class="container">
+            <div class="section-header text-center fade-up">
+                <h2 class="section-title">Visual <span class="highlight-text">Feast</span></h2>
+                <p>A glimpse into our vibrant ambiance and culinary creations.</p>
+            </div>
+            <div class="gallery-grid">
+                <div class="gallery-item fade-up">
+                    <img src="https://images.unsplash.com/photo-1514326640560-7d063ef2aed5?auto=format&fit=crop&q=80&w=800"
+                        alt="Food Prep">
+                    <div class="gallery-overlay"><span>Fresh Ingredients</span></div>
+                </div>
+                <div class="gallery-item fade-up delay-1">
+                    <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&q=80&w=800"
+                        alt="Restaurant Interior">
+                    <div class="gallery-overlay"><span>Elegant Dining</span></div>
+                </div>
+                <div class="gallery-item fade-up delay-2">
+                    <img src="https://images.unsplash.com/photo-1596797038530-2c107229654b?auto=format&fit=crop&q=80&w=800"
+                        alt="Spices">
+                    <div class="gallery-overlay"><span>Authentic Spices</span></div>
+                </div>
+                <div class="gallery-item fade-up">
+                    <img src="https://images.unsplash.com/photo-1617692855027-33b14f061079?auto=format&fit=crop&q=80&w=800"
+                        alt="Special Dish">
+                    <div class="gallery-overlay"><span>Chef's Special</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact section-padding bg-alt">
+        <div class="container contact-container">
+            <div class="contact-info fade-up">
+                <h2 class="section-title">Get in <span class="highlight-text">Touch</span></h2>
+                <p>Have a question or want to make a reservation? Reach out to us!</p>
+                <div class="info-item mt-2">
+                    <strong>Address:</strong>
+                    <p>Khaga Fatehpur Canal Road Khaga</p>
+                </div>
+                <div class="info-item">
+                    <strong>Phone:</strong>
+                    <p>+91 9956938642, +91 7607900221</p>
+                </div>
+                <div class="info-item">
+                    <strong>Email:</strong>
+                    <p><a href="harshpratapsingh826@gmail.com"
+                            style="color: inherit; text-decoration: none;">harshpratapsingh826@gmail.com</a></p>
+                </div>
+                <div class="social-links mt-2">
+                    <a href="https://www.instagram.com/?hl=en">Ig</a>
+                    <a href="https://www.facebook.com/profile.php?id=61562669731951">Fb</a>
+                    <a href="https://www.youtube.com/">Yt</a>
+                </div>
+            </div>
+            <div class="contact-form-wrapper fade-up delay-1">
+                <form class="contact-form" id="contactForm">
+                    <input type="text" id="contactName" placeholder="Your Name" required>
+                    <input type="email" id="contactEmail" placeholder="Your Email" required>
+                    <textarea id="contactMessage" rows="5" placeholder="Your Message" required></textarea>
+                    <button type="submit" class="btn btn-primary" id="contactSubmitBtn">Send Message</button>
+                    <p id="contactFeedback" style="margin-top: 1rem; text-align: center; font-weight: 500;"></p>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container text-center">
+            <a href="#" class="logo">Annapurna<span>.</span></a>
+            <p>&copy; 2026 Annapurna Indian Cuisine. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/cart.js"></script>
+    <script type="module" src="js/contact.js"></script>
+</body>
+
+</html>

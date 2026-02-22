@@ -1,0 +1,172 @@
+// Cart System for Annapurna Website
+
+const Cart = {
+    items: [],
+
+    init() {
+        // Load cart from localStorage
+        const savedCart = localStorage.getItem('annapurna_cart');
+        if (savedCart) {
+            this.items = JSON.parse(savedCart);
+        }
+        this.updateCartBadge();
+        this.bindEvents();
+    },
+
+    save() {
+        localStorage.setItem('annapurna_cart', JSON.stringify(this.items));
+        this.updateCartBadge();
+    },
+
+    addItem(id, name, price) {
+        // Remove currency symbol if passed
+        const numPrice = typeof price === 'string' ? parseFloat(price.replace('₹', '').replace('$', '')) : price;
+
+        const existingItem = this.items.find(item => item.id === id);
+
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            this.items.push({
+                id,
+                name,
+                price: numPrice,
+                quantity: 1
+            });
+        }
+
+        this.save();
+        this.showToast(`Added ${name} to cart!`);
+    },
+
+    removeItem(id) {
+        this.items = this.items.filter(item => item.id !== id);
+        this.save();
+
+        // Trigger a custom event so the checkout page can re-render
+        document.dispatchEvent(new Event('cartUpdated'));
+    },
+
+    updateQuantity(id, change) {
+        const item = this.items.find(item => item.id === id);
+        if (item) {
+            item.quantity += change;
+            if (item.quantity <= 0) {
+                this.removeItem(id);
+            } else {
+                this.save();
+                document.dispatchEvent(new Event('cartUpdated'));
+            }
+        }
+    },
+
+    clearCart() {
+        this.items = [];
+        this.save();
+        document.dispatchEvent(new Event('cartUpdated'));
+    },
+
+    getTotal() {
+        return this.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    },
+
+    getTotalItems() {
+        return this.items.reduce((sum, item) => sum + item.quantity, 0);
+    },
+
+    updateCartBadge() {
+        const badges = document.querySelectorAll('.cart-badge');
+        const count = this.getTotalItems();
+
+        badges.forEach(badge => {
+            if (count > 0) {
+                badge.textContent = count;
+                badge.style.display = 'flex';
+                // Small pop animation
+                badge.style.transform = 'scale(1.2) translateY(-50%)';
+                setTimeout(() => {
+                    badge.style.transform = 'scale(1) translateY(-50%)';
+                }, 200);
+            } else {
+                badge.style.display = 'none';
+            }
+        });
+    },
+
+    showToast(message) {
+        // Create toast if it doesn't exist
+        let toastContainer = document.getElementById('toast-container');
+        if (!toastContainer) {
+            toastContainer = document.createElement('div');
+            toastContainer.id = 'toast-container';
+            toastContainer.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                z-index: 9999;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            `;
+            document.body.appendChild(toastContainer);
+        }
+
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.style.cssText = `
+            background-color: #1e8e3e;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        `;
+        toast.textContent = message;
+
+        toastContainer.appendChild(toast);
+
+        // Animate in
+        setTimeout(() => {
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateY(0)';
+        }, 10);
+
+        // Animate out and remove
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(-20px)';
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
+        }, 3000);
+    },
+
+    bindEvents() {
+        // Listen for all "Add to Cart" button clicks
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.btn-add-cart')) {
+                const btn = e.target.closest('.btn-add-cart');
+                const menuItem = btn.closest('.menu-item');
+
+                if (menuItem) {
+                    const id = menuItem.dataset.id || Math.random().toString(36).substr(2, 9); // Generate ID if none exists
+                    menuItem.dataset.id = id; // Save it to the DOM for future clicks
+
+                    const name = menuItem.querySelector('h3').textContent;
+                    const price = menuItem.querySelector('.price').textContent;
+
+                    this.addItem(id, name, price);
+                }
+            }
+        });
+    }
+};
+
+// Initialize cart system when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    Cart.init();
+});

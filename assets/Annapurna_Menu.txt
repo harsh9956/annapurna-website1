@@ -1,0 +1,36 @@
+=======================================
+      ANNAPURNA INDIAN CUISINE
+         Authentic Indian Flavors
+=======================================
+
+--- STARTERS ---
+Punjabi Samosa ................... $6.99
+Crispy pastry filled with spiced potatoes and peas.
+
+Chicken Tikka ................... $10.99
+Tender chicken pieces marinated in yogurt and spices.
+
+
+--- MAIN COURSE ---
+Murgh Makhani (Butter Chicken) ... $16.99
+Classic butter chicken in a rich, creamy tomato gravy.
+
+Palak Paneer .................... $14.99
+Fresh cottage cheese cubes simmered in spiced spinach puree.
+
+
+--- DESSERTS ---
+Gulab Jamun ...................... $5.99
+Warm, deep-fried milk dumplings soaked in cardamom syrup.
+
+
+--- BEVERAGES ---
+Mango Lassi ...................... $4.99
+A refreshing creamy yogurt drink blended with Alphonso mangoes.
+
+
+=======================================
+Order online at: www.annapurna.example.com
+123 Spice Route, Flavor Town, CA 90210
+(555) 123-4567
+=======================================

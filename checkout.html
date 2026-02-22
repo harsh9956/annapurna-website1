@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Annapurna Indian Cuisine</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="css/checkout.css">
+</head>
+
+<body class="checkout-page">
+
+    <!-- Navbar (Scrolled styling forced) -->
+    <header class="navbar scrolled" id="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo" style="color: var(--clr-primary);">Annapurna<span>.</span></a>
+            <button class="mobile-toggle" aria-label="Toggle navigation">
+                <span class="bar" style="background-color: var(--clr-text);"></span>
+                <span class="bar" style="background-color: var(--clr-text);"></span>
+                <span class="bar" style="background-color: var(--clr-text);"></span>
+            </button>
+            <nav class="nav-links">
+                <a href="index.html" class="nav-link" style="color: var(--clr-text);">Home</a>
+                <a href="index.html#menu" class="nav-link" style="color: var(--clr-text);">Menu</a>
+                <a href="orders.html" class="nav-link" style="color: var(--clr-text);">My Orders</a>
+                <a href="checkout.html" class="cart-nav-icon active" aria-label="Shopping Cart">
+                    <svg xmlns="http://www.apache.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="var(--clr-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    <span class="cart-badge" style="display: none;">0</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Checkout Main Content -->
+    <section class="checkout-section">
+        <div class="checkout-header fade-up">
+            <h2>Secure Checkout</h2>
+        </div>
+
+        <div class="checkout-container">
+
+            <!-- Left Side: Order Summary -->
+            <div class="checkout-box fade-up delay-1">
+                <h3>Order Summary</h3>
+
+                <div id="cart-items-container" class="cart-items-list">
+                    <!-- Populated by JavaScript -->
+                </div>
+
+                <div class="cart-totals">
+                    <div class="total-row">
+                        <span>Subtotal</span>
+                        <span id="summary-subtotal">₹0.00</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Tax & Fees (8%)</span>
+                        <span id="summary-tax">₹0.00</span>
+                    </div>
+                    <div class="total-row grand-total">
+                        <span>Total</span>
+                        <span id="summary-total">₹0.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side: Delivery & Payment Details -->
+            <div class="checkout-box fade-up delay-2">
+                <form id="checkoutForm">
+
+                    <h3>Delivery Details</h3>
+                    <div class="form-grid mb-4">
+                        <div class="form-group full-width">
+                            <label for="address">Full Delivery Address *</label>
+                            <input type="text" id="address" placeholder="123 Spice Ave, Culinary District, City">
+                        </div>
+                        <div class="form-group">
+                            <label for="notes">Delivery Notes (Optional)</label>
+                            <input type="text" id="notes" placeholder="e.g. Leave at door">
+                        </div>
+                    </div>
+
+                    <h3>Payment Method</h3>
+                    <div class="payment-methods mb-4">
+
+                        <label class="payment-option active" id="option-cod">
+                            <input type="radio" name="paymentType" value="cod" checked>
+                            <div class="payment-details">
+                                <h4>Cash on Delivery</h4>
+                                <p>Pay with cash or card upon arrival.</p>
+                            </div>
+                        </label>
+
+                        <label class="payment-option" id="option-online">
+                            <input type="radio" name="paymentType" value="online">
+                            <div class="payment-details">
+                                <h4>Online Payment</h4>
+                                <p>Securely pay now with Credit/Debit Card.</p>
+                            </div>
+                        </label>
+
+                        <label class="payment-option" id="option-upi">
+                            <input type="radio" name="paymentType" value="upi">
+                            <div class="payment-details">
+                                <h4>UPI Payment</h4>
+                                <p>Pay using Google Pay, PhonePe, Paytm, etc.</p>
+                            </div>
+                        </label>
+
+                        <!-- Real Razorpay Integration details injected dynamically in JS if selected -->
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%; font-size: 1.1rem; padding: 1rem;"
+                        id="placeOrderBtn">
+                        Place Order • <span id="btn-total">₹0.00</span>
+                    </button>
+                    <p id="checkout-error" class="error-message"
+                        style="text-align:center; margin-top:1rem; color: #d32f2f; font-weight: 600;"></p>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Success Modal Overlay -->
+    <div class="success-modal" id="successModal">
+        <div class="modal-content">
+            <div class="success-icon">
+                <svg xmlns="http://www.apache.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            </div>
+            <h2>Order Confirmed!</h2>
+            <p>Your authentic Indian feast is being prepared. Thank you for choosing Annapurna.</p>
+            <p style="font-size: 0.9rem; margin-bottom: 2rem;">Order ID: <strong id="successOrderId"
+                    style="color:var(--clr-primary)">#ANP-XXXX</strong></p>
+            <button class="btn btn-outline" onclick="window.location.href='orders.html'" style="width:100%">View My
+                Orders</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/cart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cartItemsContainer = document.getElementById('cart-items-container');
+            const subtotalEl = document.getElementById('summary-subtotal');
+            const taxEl = document.getElementById('summary-tax');
+            const totalEl = document.getElementById('summary-total');
+            const btnTotalEl = document.getElementById('btn-total');
+
+            // Payment Toggle Logic
+            const paymentOptions = document.querySelectorAll('.payment-option');
+            const cardDetailsForm = document.getElementById('cardDetailsForm');
+
+            paymentOptions.forEach(option => {
+                option.addEventListener('click', function (e) {
+                    // Explictly check the nested radio button
+                    const radio = this.querySelector('input[type="radio"]');
+                    if (radio) radio.checked = true;
+
+                    // Update active styling
+                    paymentOptions.forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Render Cart Data
+            function renderCheckout() {
+                if (Cart.items.length === 0) {
+                    cartItemsContainer.innerHTML = `
+                        <div class="empty-cart-message">
+                            <h4>Your cart is empty.</h4>
+                            <a href="index.html#menu" class="btn btn-outline">Return to Menu</a>
+                        </div>
+                    `;
+                    document.getElementById('placeOrderBtn').disabled = true;
+                    document.getElementById('placeOrderBtn').style.opacity = '0.5';
+                    subtotalEl.textContent = '₹0.00';
+                    taxEl.textContent = '₹0.00';
+                    totalEl.textContent = '₹0.00';
+                    btnTotalEl.textContent = '₹0.00';
+                    return;
+                }
+
+                document.getElementById('placeOrderBtn').disabled = false;
+                document.getElementById('placeOrderBtn').style.opacity = '1';
+
+                // Render Item HTML
+                cartItemsContainer.innerHTML = Cart.items.map(item => `
+                    <div class="cart-item">
+                        <div class="item-info">
+                            <h4>${item.name}</h4>
+                            <div class="item-price">₹${item.price.toFixed(2)}</div>
+                        </div>
+                        <div class="quantity-control">
+                            <button type="button" class="qty-btn minus" onclick="Cart.updateQuantity('${item.id}', -1)">−</button>
+                            <input type="text" class="qty-input" value="${item.quantity}" readonly>
+                            <button type="button" class="qty-btn plus" onclick="Cart.updateQuantity('${item.id}', 1)">+</button>
+                        </div>
+                    </div>
+                `).join('');
+
+                // Calculate Totals
+                const subtotal = Cart.getTotal();
+                const tax = subtotal * 0.08; // 8% tax rate
+                const total = subtotal + tax;
+
+                subtotalEl.textContent = `₹${subtotal.toFixed(2)}`;
+                taxEl.textContent = `₹${tax.toFixed(2)}`;
+                totalEl.textContent = `₹${total.toFixed(2)}`;
+                btnTotalEl.textContent = `₹${total.toFixed(2)}`;
+            }
+
+            // Listen for Cart updates from cart.js
+            document.addEventListener('cartUpdated', renderCheckout);
+
+            // Initial Render
+            renderCheckout();
+
+            // Handle Order Placement
+            document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const errorEl = document.getElementById('checkout-error');
+                errorEl.textContent = '';
+
+                // Explicit Address Validation to prevent silent failures
+                const addressInput = document.getElementById('address');
+                if (!addressInput.value.trim()) {
+                    errorEl.textContent = 'Please provide a full delivery address.';
+                    addressInput.focus();
+                    return;
+                }
+
+                // Validate Online/UPI Payment Fields if selected
+                const paymentRadio = document.querySelector('input[name="paymentType"]:checked');
+                if (!paymentRadio) {
+                    errorEl.textContent = 'Please select a payment method.';
+                    return;
+                }
+                const paymentType = paymentRadio.value;
+
+                if (paymentType === 'online' || paymentType === 'upi') {
+
+                    const subtotal = Cart.getTotal();
+                    const total = subtotal + (subtotal * 0.08);
+
+                    try {
+                        const orderResponse = await window.API.request('/payment/create', {
+                            method: 'POST',
+                            body: JSON.stringify({ amount: total })
+                        });
+
+                        if (orderResponse && orderResponse.success) {
+                            const options = {
+                                key: "rzp_test_YourTestKeyHere", // Add your test key ID here
+                                amount: orderResponse.amount,
+                                currency: orderResponse.currency,
+                                name: "Annapurna Indian Cuisine",
+                                description: "Authentic Indian Food Order",
+                                order_id: orderResponse.orderId,
+                                handler: async function (response) {
+                                    try {
+                                        // Verify Signature
+                                        const verifyRes = await window.API.request('/payment/verify', {
+                                            method: 'POST',
+                                            body: JSON.stringify({
+                                                razorpay_order_id: response.razorpay_order_id,
+                                                razorpay_payment_id: response.razorpay_payment_id,
+                                                razorpay_signature: response.razorpay_signature,
+                                                orderData: {
+                                                    items: Cart.items,
+                                                    total: total.toFixed(2),
+                                                    paymentType: paymentType
+                                                }
+                                            })
+                                        });
+
+                                        if (verifyRes.success) {
+                                            completeCheckout(verifyRes.data.orderId);
+                                        } else {
+                                            errorEl.textContent = "Payment verification failed.";
+                                        }
+                                    } catch (err) {
+                                        console.error(err);
+                                        errorEl.textContent = "Error saving verified order.";
+                                    } finally {
+                                        resetBtn();
+                                    }
+                                },
+                                prefill: {
+                                    name: "Customer Name",
+                                    email: "customer@example.com",
+                                    contact: "9999999999"
+                                },
+                                theme: {
+                                    color: "#8B0000"
+                                }
+                            };
+
+                            const rzp = new window.Razorpay(options);
+                            rzp.on('payment.failed', function (response) {
+                                errorEl.textContent = "Razorpay Payment Failed: " + response.error.description;
+                                resetBtn();
+                            });
+                            rzp.open();
+
+                        } else {
+                            errorEl.textContent = "Could not initialize Razorpay order.";
+                            resetBtn();
+                        }
+
+                    } catch (err) {
+                        console.error('Razorpay Error:', err);
+                        errorEl.textContent = "Unable to connect to payment gateway. Is backend running?";
+                        resetBtn();
+                    }
+
+                } else {
+                    // Cash on Delivery - Legacy Flow
+                    try {
+                        // Try to process via real Backend securely
+                        const response = await window.API.request('/orders', {
+                            method: 'POST',
+                            body: JSON.stringify({
+                                items: Cart.items,
+                                paymentType: paymentType
+                            })
+                        });
+
+                        if (response.success) {
+                            // Order securely calculated and saved in SQLite
+                            const newOrder = response.data;
+                            completeCheckout(newOrder.orderId);
+                        }
+                    } catch (error) {
+                        if (error.isNetworkError) {
+                            console.log("Backend offline. Gracefully falling back to local simulated checkout processing.");
+                            // Simulate local successful order object
+                            const subtotal = Cart.getTotal();
+                            const total = subtotal + (subtotal * 0.08);
+
+                            const newOrder = {
+                                id: 'ANP-' + Math.floor(1000 + Math.random() * 9000),
+                                date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' }),
+                                items: [...Cart.items],
+                                total: total.toFixed(2),
+                                paymentType: paymentType,
+                                status_payment: (paymentType === 'online' || paymentType === 'upi') ? 'Paid' : 'Pending',
+                                status_delivery: 'Processing'
+                            };
+
+                            // Save to local storage for the Orders page
+                            let orderHistory = JSON.parse(localStorage.getItem('annapurna_orders')) || [];
+                            orderHistory.unshift(newOrder);
+                            localStorage.setItem('annapurna_orders', JSON.stringify(orderHistory));
+
+                            completeCheckout(newOrder.id);
+                        } else {
+                            // True API error (e.g. invalid item ID, unauthorized)
+                            errorEl.textContent = error.message;
+                            resetBtn();
+                        }
+                    }
+                }
+
+                function resetBtn() {
+                    btn.innerHTML = 'Place Order • ' + btnTotalEl.textContent;
+                    btn.disabled = false;
+                }
+
+                function completeCheckout(orderId) {
+                    // Show Success Modal
+                    document.getElementById('successOrderId').textContent = '#' + orderId;
+                    document.getElementById('successModal').classList.add('active');
+                    // Clear the cart
+                    Cart.clearCart();
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

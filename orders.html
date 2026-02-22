@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order History - Annapurna Authentic Indian Cuisine</title>
+    <meta name="description" content="View and manage your past orders from Annapurna.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/orders.css">
+    <link rel="stylesheet" href="css/checkout.css"> <!-- Reusing cart icon styles -->
+</head>
+
+<body class="orders-page">
+    <!-- Navbar (Scrolled state forced) -->
+    <header class="navbar scrolled" id="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo" style="color: var(--clr-primary);">Annapurna<span>.</span></a>
+            <button class="mobile-toggle" aria-label="Toggle navigation">
+                <span class="bar" style="background-color: var(--clr-text);"></span>
+                <span class="bar" style="background-color: var(--clr-text);"></span>
+                <span class="bar" style="background-color: var(--clr-text);"></span>
+            </button>
+            <nav class="nav-links">
+                <a href="index.html" class="nav-link" style="color: var(--clr-text);">Home</a>
+                <a href="index.html#menu" class="nav-link" style="color: var(--clr-text);">Menu</a>
+                <a href="orders.html" class="nav-link active" style="color: var(--clr-text);">My Orders</a>
+                <a href="login.html" class="nav-link" style="color: var(--clr-text);">Logout</a>
+                <a href="checkout.html" class="cart-nav-icon" aria-label="Shopping Cart">
+                    <svg xmlns="http://www.apache.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    <span class="cart-badge" style="display: none;">0</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Order History Content -->
+    <section class="orders-section">
+        <div class="container orders-container">
+
+            <div class="orders-header fade-up">
+                <h2>Welcome back, <span class="highlight-text" id="userNameLabel">Guest</span></h2>
+                <p>Track, manage, and reorder your favorite meals.</p>
+            </div>
+
+            <!-- Dynamic Order List -->
+            <div class="orders-list" id="ordersListContainer">
+                <!-- Javascript will populate this -->
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" id="emptyStateContainer" style="display: none;">
+                <svg xmlns="http://www.apache.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none"
+                    stroke="#ddd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    style="margin-bottom: 2rem;">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+                <h3>No Orders Yet</h3>
+                <p>Looks like you haven't indulged in our spices yet.</p>
+                <a href="index.html#menu" class="btn btn-primary">Browse Menu</a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer mt-4">
+        <div class="container text-center">
+            <a href="index.html" class="logo">Annapurna<span>.</span></a>
+            <p>&copy; 2026 Annapurna Indian Cuisine. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/cart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check login state
+            const userData = localStorage.getItem('annapurna_user');
+            if (userData) {
+                const user = JSON.parse(userData);
+                document.getElementById('userNameLabel').textContent = user.name || user.email.split('@')[0];
+            }
+
+            // Load Orders Integration
+            const ordersContainer = document.getElementById('ordersListContainer');
+            const emptyState = document.getElementById('emptyStateContainer');
+            let orders = [];
+
+            try {
+                // Try fetching securely from backend
+                const response = await window.API.request('/orders');
+                if (response.success && response.data) {
+                    orders = response.data;
+                }
+            } catch (error) {
+                console.log("Backend offline. Gracefully falling back to local simulated order history.");
+                // Fallback to LocalStorage
+                const savedOrders = localStorage.getItem('annapurna_orders');
+                orders = savedOrders ? JSON.parse(savedOrders) : [];
+
+                // Add some mock data if completely empty for demonstration purposes
+                if (orders.length === 0) {
+                    orders = [
+                        {
+                            id: 'ANP-8924',
+                            date: 'Oct 24, 2026, 7:30 PM',
+                            items: [
+                                { name: 'Murgh Makhani (Butter Chicken)', quantity: 2 },
+                                { name: 'Garlic Naan', quantity: 4 },
+                                { name: 'Gulab Jamun (Portion of 3)', quantity: 1 }
+                            ],
+                            total: '47.96',
+                            paymentType: 'online',
+                            status_payment: 'Paid',
+                            status_delivery: 'Delivered'
+                        }
+                    ];
+                    localStorage.setItem('annapurna_orders', JSON.stringify(orders));
+                }
+            }
+
+            if (orders.length === 0) {
+                ordersContainer.style.display = 'none';
+                emptyState.style.display = 'block';
+            } else {
+                ordersContainer.style.display = 'block';
+                emptyState.style.display = 'none';
+
+                ordersContainer.innerHTML = orders.map((order, index) => {
+
+                    const paymentBadgeClass = order.status_payment === 'Paid' ? 'badge-paid' : 'badge-pending';
+                    const deliveryBadgeClass = order.status_delivery === 'Delivered' ? 'badge-delivered' : 'badge-processing';
+
+                    const itemsHtml = order.items.map(item => `<li>${item.quantity}x ${item.name}</li>`).join('');
+
+                    return `
+                    <div class="order-card fade-up delay-${(index % 3) + 1}">
+                        <div class="order-card-header">
+                            <div>
+                                <div class="order-id">Order #${order.id}</div>
+                                <div class="order-date">Placed on ${order.date}</div>
+                            </div>
+                            <div class="status-badges">
+                                <span class="badge ${paymentBadgeClass}">${order.status_payment}</span>
+                                <span class="badge ${deliveryBadgeClass}">${order.status_delivery}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="order-body">
+                            <div class="order-items">
+                                <ul>${itemsHtml}</ul>
+                            </div>
+                            <div class="order-total">
+                                <p>Total Amount</p>
+                                <h3>₹${order.total}</h3>
+                            </div>
+                        </div>
+
+                        <div class="order-actions">
+                            ${order.status_payment === 'Paid' ? '<button class="btn btn-outline">Download Invoice</button>' : ''}
+                            <button class="btn btn-outline" onclick="window.location.href='index.html#menu'">Menu</button>
+                            <button class="btn btn-primary btn-reorder" data-order='${JSON.stringify(order.items)}'>Reorder</button>
+                        </div>
+                    </div>
+                    `;
+                }).join('');
+            }
+
+            // Bind Reorder Buttons
+            const reorderBtns = document.querySelectorAll('.btn-reorder:not([disabled])');
+            reorderBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const originalText = btn.textContent;
+                    btn.textContent = 'Adding to Cart...';
+
+                    // Parse Order Items and add to Cart System
+                    const items = JSON.parse(btn.getAttribute('data-order'));
+                    items.forEach(item => {
+                        // Estimate an ID and price if missing in legacy records
+                        const id = item.id || Math.random().toString(36).substr(2, 9);
+                        const price = item.price || 12.99; // Fallback
+                        // Add X amount of times
+                        for (let i = 0; i < item.quantity; i++) {
+                            Cart.addItem(id, item.name, price);
+                        }
+                    });
+
+                    setTimeout(() => {
+                        btn.textContent = 'Added to Cart ✓';
+                        btn.style.backgroundColor = '#1e8e3e';
+                        btn.style.borderColor = '#1e8e3e';
+                        setTimeout(() => {
+                            btn.textContent = originalText;
+                            btn.style.backgroundColor = '';
+                            btn.style.borderColor = '';
+                            // Redirect to checkout
+                            window.location.href = 'checkout.html';
+                        }, 1000);
+                    }, 800);
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
