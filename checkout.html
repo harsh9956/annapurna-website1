@@ -514,6 +514,97 @@
                     // Clear the cart
                     Cart.clearCart();
                 }
+
+                // --- RATING POPUP LOGIC ---
+                let currentRatingOrder = null;
+                let pendingRatings = {}; // { menu_item_id: rating }
+
+                window.showRatingPopup = function (items, orderId) {
+                    currentRatingOrder = orderId;
+                    pendingRatings = {};
+
+                    const container = document.getElementById('ratingItemsContainer');
+                    container.innerHTML = '';
+
+                    items.forEach(item => {
+                        const row = document.createElement('div');
+                        row.className = 'rating-item';
+                        row.innerHTML = `
+                            <div style="text-align:left;">
+                                <strong>${item.name}</strong><br>
+                                <small style="color:#666;">₹${item.price.toFixed(2)} x ${item.quantity}</small>
+                            </div>
+                            <div class="star-rating" data-id="${item.id}">
+                                <span data-value="5">★</span>
+                                <span data-value="4">★</span>
+                                <span data-value="3">★</span>
+                                <span data-value="2">★</span>
+                                <span data-value="1">★</span>
+                            </div>
+                        `;
+                        container.appendChild(row);
+
+                        // Default rating starts empty
+                        pendingRatings[item.id] = 0;
+                    });
+
+                    // Attach click handlers to stars
+                    document.querySelectorAll('.star-rating span').forEach(star => {
+                        star.addEventListener('click', function () {
+                            const parent = this.parentElement;
+                            const dishId = parent.getAttribute('data-id');
+                            const value = parseInt(this.getAttribute('data-value'), 10);
+
+                            // Highlight stars with JS directly to override CSS hover states on click
+                            Array.from(parent.children).forEach(s => {
+                                if (parseInt(s.getAttribute('data-value'), 10) <= value) {
+                                    s.style.color = "var(--clr-primary)";
+                                } else {
+                                    s.style.color = "#ccc";
+                                }
+                            });
+
+                            pendingRatings[dishId] = value;
+                        });
+                    });
+
+                    document.getElementById('ratingModal').classList.add('active');
+                };
+
+                document.getElementById('skipRatingsBtn').addEventListener('click', () => {
+                    document.getElementById('ratingModal').classList.remove('active');
+                    if (currentRatingOrder) {
+                        completeCheckout(currentRatingOrder);
+                    }
+                });
+
+                document.getElementById('submitRatingsBtn').addEventListener('click', async () => {
+                    const btn = document.getElementById('submitRatingsBtn');
+                    btn.disabled = true;
+                    btn.textContent = "Submitting...";
+
+                    try {
+                        // Submit all valid ratings individually
+                        for (let [dishId, rating] of Object.entries(pendingRatings)) {
+                            if (rating > 0) {
+                                await window.API.request('/reviews', {
+                                    method: 'POST',
+                                    body: JSON.stringify({
+                                        menu_item_id: dishId,
+                                        rating: rating
+                                    })
+                                });
+                            }
+                        }
+                    } catch (err) {
+                        console.log("Error or offline mode submitting rating:", err);
+                    }
+
+                    document.getElementById('ratingModal').classList.remove('active');
+                    if (currentRatingOrder) {
+                        completeCheckout(currentRatingOrder);
+                    }
+                });
             });
         });
     </script>
