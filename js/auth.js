@@ -94,8 +94,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 signInWithEmailAndPassword(auth, email.value, password.value)
                     .then((userCredential) => {
                         const user = userCredential.user;
+                        const isAdmin = (user.email === 'harshpratapsingh826@gmail.com') ? 1 : 0;
                         localStorage.setItem('annapurna_token', user.accessToken);
-                        localStorage.setItem('annapurna_user', JSON.stringify({ email: user.email, name: user.displayName || "User", id: user.uid }));
+                        localStorage.setItem('annapurna_user', JSON.stringify({ email: user.email, name: user.displayName || "User", id: user.uid, is_admin: isAdmin }));
                         triggerSuccess();
                     })
                     .catch((error) => {
@@ -204,6 +205,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 createUserWithEmailAndPassword(auth, email.value, password.value)
                     .then((userCredential) => {
+                        const user = userCredential.user;
+                        const isAdmin = (user.email === 'harshpratapsingh826@gmail.com') ? 1 : 0;
+                        localStorage.setItem('annapurna_token', user.accessToken);
+                        localStorage.setItem('annapurna_user', JSON.stringify({ email: user.email, name: name.value || "User", id: user.uid, is_admin: isAdmin }));
                         triggerSuccess();
                     })
                     .catch((error) => {
@@ -253,8 +258,9 @@ document.addEventListener('DOMContentLoaded', () => {
             signInWithPopup(auth, googleProvider)
                 .then((result) => {
                     const user = result.user;
+                    const isAdmin = (user.email === 'harshpratapsingh826@gmail.com') ? 1 : 0;
                     localStorage.setItem('annapurna_token', user.accessToken);
-                    localStorage.setItem('annapurna_user', JSON.stringify({ name: user.displayName || "Google User", email: user.email, id: user.uid }));
+                    localStorage.setItem('annapurna_user', JSON.stringify({ name: user.displayName || "Google User", email: user.email, id: user.uid, is_admin: isAdmin }));
 
                     googleBtn.innerHTML = 'Connected!';
                     googleBtn.style.backgroundColor = '#1e8e3e';

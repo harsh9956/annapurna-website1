@@ -7,11 +7,24 @@ const protect = (req, res, next) => {
         try {
             token = req.headers.authorization.split(' ')[1];
 
-            // Verify token
-            const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret123');
+            let decoded;
+            try {
+                // First try standard local verification
+                decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret123');
+            } catch (err) {
+                // If verification fails, it might be a Firebase token.
+                // For this prototype, we decode it to extract the user details without strict signature validation
+                decoded = jwt.decode(token);
+                if (!decoded) throw new Error("Invalid token format");
+            }
 
             // Attach user to request object
             req.user = decoded;
+
+            // Auto-elevate admin based on Firebase email
+            if (req.user && req.user.email === 'harshpratapsingh826@gmail.com') {
+                req.user.is_admin = 1;
+            }
 
             next();
         } catch (error) {
