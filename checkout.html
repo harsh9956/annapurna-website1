@@ -91,7 +91,8 @@
                         </div>
                         <div class="form-group full-width">
                             <label for="phone">Phone Number *</label>
-                            <input type="tel" id="phone" placeholder="9999999999" required>
+                            <input type="tel" id="phone" placeholder="9999999999" pattern="[0-9]{10}" maxlength="10"
+                                required>
                         </div>
                         <div class="form-group full-width">
                             <label for="address">Full Delivery Address *</label>
@@ -262,8 +263,9 @@
                     nameInput.focus();
                     return;
                 }
-                if (!phoneInput.value.trim() || phoneInput.value.trim().length < 10) {
-                    errorEl.textContent = 'Please provide a valid phone number.';
+                const phonePattern = /^[0-9]{10}$/;
+                if (!phoneInput.value.trim() || !phonePattern.test(phoneInput.value.trim())) {
+                    errorEl.textContent = 'Please enter exactly a 10-digit phone number.';
                     phoneInput.focus();
                     return;
                 }
