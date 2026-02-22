@@ -141,11 +141,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const name = document.getElementById('name');
             const email = document.getElementById('email');
+            const phone = document.getElementById('phone');
             const password = document.getElementById('password');
             const confirmPassword = document.getElementById('confirmPassword');
 
             const nameError = document.getElementById('nameError');
             const emailError = document.getElementById('emailError');
+            const phoneError = document.getElementById('phoneError');
             const passwordError = document.getElementById('passwordError');
             const confirmPasswordError = document.getElementById('confirmPasswordError');
 
@@ -155,12 +157,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 isValid = false;
             }
 
-            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const emailPattern = /^[^\s@]+@gmail\.com$/;
             if (!email.value || !emailPattern.test(email.value)) {
                 email.classList.add('invalid');
                 if (emailError) {
-                    emailError.textContent = 'Please enter a valid email address.';
+                    emailError.textContent = 'Please enter a valid @gmail.com address.';
                     emailError.classList.add('show');
+                }
+                isValid = false;
+            }
+
+            const phonePattern = /^[0-9]{10}$/;
+            if (!phone.value || !phonePattern.test(phone.value)) {
+                phone.classList.add('invalid');
+                if (phoneError) {
+                    phoneError.textContent = 'Please enter exactly a 10-digit phone number.';
+                    phoneError.classList.add('show');
                 }
                 isValid = false;
             }

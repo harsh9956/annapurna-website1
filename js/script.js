@@ -192,4 +192,77 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize the dynamic menu fetch
     loadMenu();
+
+    // Dish Details Modal Logic
+    const dishModal = document.getElementById('dishModal');
+    const closeDishModalBtn = document.getElementById('closeDishModal');
+    let currentModalDishId = '';
+    let currentModalDishName = '';
+    let currentModalDishPrice = 0;
+
+    // Event Delegation: Open modal when clicking an image or a specific "Details" part of the dish
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('.menu-item img') || e.target.closest('.menu-item h3')) {
+            const menuItem = e.target.closest('.menu-item');
+            if (menuItem) {
+                // Ensure ID exists
+                currentModalDishId = menuItem.dataset.id || Math.random().toString(36).substr(2, 9);
+                menuItem.dataset.id = currentModalDishId;
+
+                // Extract Details
+                const imgSource = menuItem.querySelector('img').src;
+                currentModalDishName = menuItem.querySelector('h3').textContent;
+                const priceText = menuItem.querySelector('.price').textContent;
+                currentModalDishPrice = parseFloat(priceText.replace('₹', '').replace('$', ''));
+                const description = menuItem.querySelector('p').textContent;
+
+                // Get rating if exists
+                const ratingContainer = menuItem.querySelector('.menu-rating');
+                const ratingHtml = ratingContainer ? ratingContainer.innerHTML : '';
+
+                // Populate Modal
+                document.getElementById('modalDishImage').src = imgSource;
+                document.getElementById('modalDishName').textContent = currentModalDishName;
+                document.getElementById('modalDishPrice').textContent = priceText;
+                document.getElementById('modalDishDescription').textContent = description;
+                document.getElementById('modalDishRating').innerHTML = ratingHtml;
+
+                // Show Add To Cart Price dynamically
+                document.getElementById('modalAddCartBtn').innerHTML = `Add to Cart &bull; ${priceText}`;
+
+                // Show Modal
+                dishModal.classList.add('show');
+                document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            }
+        }
+    });
+
+    // Close Modal Logic
+    const closeDishModal = () => {
+        dishModal.classList.remove('show');
+        document.body.style.overflow = '';
+    };
+
+    if (closeDishModalBtn) closeDishModalBtn.addEventListener('click', closeDishModal);
+
+    if (dishModal) {
+        dishModal.addEventListener('click', (e) => {
+            if (e.target === dishModal) {
+                closeDishModal();
+            }
+        });
+    }
+
+    // Modal Add to Cart Button Logic
+    const modalAddCartBtn = document.getElementById('modalAddCartBtn');
+    if (modalAddCartBtn) {
+        modalAddCartBtn.addEventListener('click', () => {
+            if (window.Cart && currentModalDishId) {
+                window.Cart.addItem(currentModalDishId, currentModalDishName, currentModalDishPrice);
+                closeDishModal();
+            } else {
+                console.error("Cart system is not initialized properly.");
+            }
+        });
+    }
 });

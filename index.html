@@ -111,6 +111,11 @@
                             <span class="price">₹6.99</span>
                         </div>
                         <p>Crispy pastry filled with spiced potatoes and peas, served with mint chutney.</p>
+                        <div class="menu-rating">
+                            <span class="star">★</span><span class="star">★</span><span class="star">★</span><span
+                                class="star">★</span><span class="star half">★</span>
+                            <span class="rating-text">(4.8)</span>
+                        </div>
                         <button class="btn btn-outline btn-add-cart mt-2" style="width: 100%; padding: 0.5rem 1rem;">Add
                             to Cart</button>
                     </div>
@@ -125,6 +130,11 @@
                             <span class="price">₹16.99</span>
                         </div>
                         <p>Tender chicken simmered in a rich, creamy tomato and butter gravy.</p>
+                        <div class="menu-rating">
+                            <span class="star">★</span><span class="star">★</span><span class="star">★</span><span
+                                class="star">★</span><span class="star">★</span>
+                            <span class="rating-text">(5.0)</span>
+                        </div>
                         <button class="btn btn-outline btn-add-cart mt-2" style="width: 100%; padding: 0.5rem 1rem;">Add
                             to Cart</button>
                     </div>
@@ -139,6 +149,11 @@
                             <span class="price">₹14.99</span>
                         </div>
                         <p>Cubes of fresh cottage cheese cooked in a smooth, spiced spinach purée.</p>
+                        <div class="menu-rating">
+                            <span class="star">★</span><span class="star">★</span><span class="star">★</span><span
+                                class="star">★</span><span class="star half">★</span>
+                            <span class="rating-text">(4.7)</span>
+                        </div>
                         <button class="btn btn-outline btn-add-cart mt-2" style="width: 100%; padding: 0.5rem 1rem;">Add
                             to Cart</button>
                     </div>
@@ -153,6 +168,11 @@
                             <span class="price">₹5.99</span>
                         </div>
                         <p>Deep-fried milk dumplings soaked in fragrant rose and cardamom syrup.</p>
+                        <div class="menu-rating">
+                            <span class="star">★</span><span class="star">★</span><span class="star">★</span><span
+                                class="star">★</span><span class="star half">★</span>
+                            <span class="rating-text">(4.9)</span>
+                        </div>
                         <button class="btn btn-outline btn-add-cart mt-2" style="width: 100%; padding: 0.5rem 1rem;">Add
                             to Cart</button>
                     </div>
@@ -247,6 +267,35 @@
                 India right here.</p>
         </div>
     </footer>
+
+    <!-- Dish Details Modal -->
+    <div class="dish-modal" id="dishModal">
+        <div class="dish-modal-content fade-up" style="transform: translateY(0); opacity: 1;">
+            <span class="close-dish-modal" id="closeDishModal">&times;</span>
+            <div class="dish-modal-grid">
+                <div class="dish-modal-image">
+                    <img id="modalDishImage" src="" alt="Dish Image">
+                </div>
+                <div class="dish-modal-details">
+                    <h2 id="modalDishName">Dish Name</h2>
+                    <span class="price" id="modalDishPrice">₹0.00</span>
+
+                    <div class="menu-rating" id="modalDishRating" style="margin-top: 0.5rem; margin-bottom: 1rem;">
+                        <!-- Dynamic Stars JS -->
+                    </div>
+
+                    <p id="modalDishDescription"
+                        style="color: var(--clr-text-light); margin-bottom: 1.5rem; line-height: 1.6;">
+                        Description goes here.
+                    </p>
+
+                    <button class="btn btn-primary" id="modalAddCartBtn" style="width: 100%; padding: 0.8rem 1rem;">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Scripts -->
     <script src="js/api.js"></script>

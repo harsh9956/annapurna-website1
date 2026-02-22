@@ -483,7 +483,47 @@ ul {
 
 .menu-item-info p {
     color: var(--clr-text-light);
+    margin-bottom: 1rem;
+    flex-grow: 1;
     font-size: 0.95rem;
+}
+
+.menu-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    margin-bottom: 1rem;
+}
+
+.menu-rating .star {
+    color: #ffd700;
+    /* Gold color for stars */
+    font-size: 1.1rem;
+}
+
+.menu-rating .star.half {
+    position: relative;
+    display: inline-block;
+    color: #e0e0e0;
+    /* Grey background for empty part */
+}
+
+.menu-rating .star.half::after {
+    content: '★';
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #ffd700;
+    overflow: hidden;
+    width: 50%;
+    /* Show only half the gold star */
+}
+
+.menu-rating .rating-text {
+    font-size: 0.9rem;
+    color: var(--clr-text-light);
+    margin-left: 0.5rem;
+    font-weight: 500;
 }
 
 /* Gallery Section */
@@ -624,5 +664,106 @@ ul {
 @media (max-width: 768px) {
     .contact-container {
         grid-template-columns: 1fr;
+    }
+}
+
+/* Dish Details Modal */
+.dish-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    align-items: center;
+    justify-content: center;
+}
+
+.dish-modal.show {
+    display: flex;
+}
+
+.dish-modal-content {
+    background-color: var(--clr-bg);
+    border-radius: 12px;
+    width: 90%;
+    max-width: 800px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.close-dish-modal {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    color: var(--clr-text);
+    font-size: 35px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 10;
+    transition: color 0.3s;
+}
+
+.close-dish-modal:hover {
+    color: var(--clr-primary);
+}
+
+.dish-modal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+}
+
+.dish-modal-image {
+    height: 100%;
+    min-height: 400px;
+}
+
+.dish-modal-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.dish-modal-details {
+    padding: 3rem 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.dish-modal-details h2 {
+    font-family: var(--font-heading);
+    color: var(--clr-text);
+    margin-bottom: 0.5rem;
+    font-size: 2rem;
+}
+
+.dish-modal-details .price {
+    font-size: 1.5rem;
+    color: var(--clr-primary);
+    font-weight: 700;
+}
+
+@media (max-width: 768px) {
+    .dish-modal-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dish-modal-image {
+        min-height: 250px;
+    }
+
+    .dish-modal-content {
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .dish-modal-details {
+        padding: 1.5rem;
     }
 }
