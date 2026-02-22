@@ -41,13 +41,17 @@ const API = {
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.message || 'API Error');
+                throw { isApiError: true, status: response.status, message: data.message || 'API Error' };
             }
 
             return data;
         } catch (error) {
+            if (error.isApiError) {
+                // Re-throw genuine API errors (like 400 Bad Request) normaly so frontend UI handles them
+                throw new Error(error.message);
+            }
             console.warn(`[API Network Failed for ${endpoint}]:`, error.message);
-            // Throw a specific network offline error so callers can fallback
+            // Only throw network offline error if fetch actually failed to connect
             throw { isNetworkError: true, originalError: error };
         }
     }
